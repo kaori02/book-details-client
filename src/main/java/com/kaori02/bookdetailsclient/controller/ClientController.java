@@ -5,7 +5,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class ClientController {
@@ -15,14 +17,24 @@ public class ClientController {
 
   @PostConstruct
   public static void main() {
-    callGetBookById();
+    List<String> fields = new ArrayList<>();
+    fields.add("id");
+    fields.add("name");
+    fields.add("pageCount");
+    fields.add("author{firstName lastName}");
+
+    callGetBookById("61c058045760ec26718a9bd7", fields);
   }
 
-  private static void callGetBookById() {
+  private static void callGetBookById(String bookId, List<String> fields) {
+    StringBuilder fieldString = new StringBuilder();
+    for (String field : fields) {
+      fieldString.append(" ").append(field);
+    }
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
-    HttpEntity<String> entity = new HttpEntity<>("{bookById(id:\"61c058045760ec26718a9bd8\"){id name pageCount author{firstName lastName}}}", headers);
+    HttpEntity<String> entity = new HttpEntity<>("{bookById(id:\"" + bookId +"\"){" + fieldString+ "}}", headers);
 
     ResponseEntity<String> result = restTemplate.exchange(BOOK_DETAILS_API, HttpMethod.POST, entity, String.class);
 
