@@ -24,6 +24,7 @@ public class ClientController {
     fields.add("author{firstName lastName}");
 
     callGetBookById("61c058045760ec26718a9bd7", fields);
+    callGetAllBooks();
   }
 
   private static void callGetBookById(String bookId, List<String> fields) {
@@ -57,6 +58,6 @@ public class ClientController {
 
     ResponseEntity<String> result = restTemplate.exchange(BOOK_DETAILS_API, HttpMethod.POST, entity, String.class);
 
-    System.out.println(result);
+    System.out.println(result.getBody());
   }
 }
